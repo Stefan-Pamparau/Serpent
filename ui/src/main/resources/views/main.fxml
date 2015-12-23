@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane fx:id="root" fx:controller="controllers.RootController"
+          xmlns:fx="http://javafx.com/fxml">
+
+    <MenuBar fx:id="optionsMenuBar" GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <Menu fx:id="fileMenu" text="%main.root.optionsMenuBar.fileMenu">
+            <MenuItem fx:id="fileMenuNewItem" text="%main.root.optionsMenuBar.fileMenu.newFile"
+                      onAction="#handleNewFileAction"/>
+            <MenuItem fx:id="fileMenuOpenItem" text="%main.root.optionsMenuBar.fileMenu.openFile"
+                      onAction="#handleOpenFileAction"/>
+            <SeparatorMenuItem/>
+            <MenuItem fx:id="fileMenuExitItem" text="%main.root.optionsMenuBar.fileMenu.exit"
+                      onAction="#handleExitFileAction"/>
+        </Menu>
+        <Menu fx:id="editMenu" text="%main.root.optionsMenuBar.editMenu"/>
+    </MenuBar>
+
+    <TreeView fx:id="folderStructureTreeView" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+
+    <TabPane fx:id="filesTabPane" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+</GridPane>

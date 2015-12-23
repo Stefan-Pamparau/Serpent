@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<GridPane fx:id="root" fx:controller="controllers.NewFileController"
+          xmlns:fx="http://javafx.com/fxml" vgap="10" hgap="10">
+
+    <Label fx:id="newFileLabel" text="%newFile.root.newFileLabel" GridPane.rowIndex="0" GridPane.columnIndex="0"
+           GridPane.columnSpan="2"/>
+    <TextField fx:id="newFileTextField" text="%newFile.root.newFileTextField" GridPane.rowIndex="1"
+               GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+    <Button fx:id="createButton" text="%newFile.root.createButton" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <Button fx:id="cancelButton" text="%newFile.root.cancelButton" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+</GridPane>

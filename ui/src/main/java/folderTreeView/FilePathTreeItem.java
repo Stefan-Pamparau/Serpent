@@ -1,10 +1,5 @@
 package folderTreeView;
 
-import javafx.event.EventHandler;
-import javafx.scene.control.TreeItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -13,7 +8,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 
-public class FilePathTreeItem<T> extends TreeItem<String> {
+import javafx.event.EventHandler;
+import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+public class FilePathTreeItem extends TreeItem<String> {
     private static Image fileImage = new Image(ClassLoader.getSystemResourceAsStream("images/file/text-generic.png"));
     private static Image folderExpandedImage = new Image(ClassLoader.getSystemResourceAsStream("images/folder/folder-expanded.png"));
     private static Image folderCollapsedImage = new Image(ClassLoader.getSystemResourceAsStream("images/folder/folder-collapsed.png"));
@@ -29,6 +29,8 @@ public class FilePathTreeItem<T> extends TreeItem<String> {
         setItemValue(path);
         addExpandedItemEventHandler();
         addCollapsedItemEventHandler();
+
+        this.getChildren().add(new TreeItem<String>("make it expandable"));
     }
 
     private void checkIfPathIsDirectory(Path path) {
@@ -54,43 +56,38 @@ public class FilePathTreeItem<T> extends TreeItem<String> {
     }
 
     private void addExpandedItemEventHandler() {
-        this.addEventHandler(TreeItem.branchExpandedEvent(), new EventHandler<TreeModificationEvent<Object>>() {
-            public void handle(TreeModificationEvent<Object> event) {
-                if (event.getSource() instanceof FilePathTreeItem) {
-                    FilePathTreeItem source = (FilePathTreeItem) event.getSource();
-                    if (source.isDirectory() && source.isExpanded()) {
-                        ImageView imageView = (ImageView) source.getGraphic();
-                        imageView.setImage(folderExpandedImage);
-                    }
+        this.addEventHandler(TreeItem.<String>branchExpandedEvent(), event -> {
+            FilePathTreeItem source = (FilePathTreeItem) event.getSource();
+            if (source.isDirectory() && source.isExpanded()) {
+                ImageView imageView = (ImageView) source.getGraphic();
+                imageView.setImage(folderExpandedImage);
+            }
 
-                    try {
-                        if (source.getChildren().isEmpty()) {
-                            Path path = Paths.get(source.getFullPath());
-                            BasicFileAttributes attributes = Files.readAttributes(path, BasicFileAttributes.class);
-                            if (attributes.isDirectory()) {
-                                DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
-                                for (Path file : directoryStream) {
-                                    FilePathTreeItem<Object> treeNode = new FilePathTreeItem<Object>(file);
-                                    source.getChildren().add(treeNode);
-                                }
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            try {
+                if (!source.getChildren().isEmpty()) {
+                    source.getChildren().remove(0, source.getChildren().size());
+                }
+                Path path = Paths.get(source.getFullPath());
+                BasicFileAttributes attributes = Files.readAttributes(path, BasicFileAttributes.class);
+                if (attributes.isDirectory()) {
+                    DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
+                    for (Path file : directoryStream) {
+                        FilePathTreeItem treeNode = new FilePathTreeItem(file);
+                        source.getChildren().add(treeNode);
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
 
     private void addCollapsedItemEventHandler() {
-        this.addEventHandler(TreeItem.branchCollapsedEvent(), new EventHandler<TreeModificationEvent<Object>>() {
-            public void handle(TreeModificationEvent<Object> event) {
-                FilePathTreeItem source = (FilePathTreeItem) event.getSource();
-                if (source.isDirectory && !source.isExpanded()) {
-                    ImageView imageView = (ImageView) source.getGraphic();
-                    imageView.setImage(folderCollapsedImage);
-                }
+        this.addEventHandler(TreeItem.<String>branchCollapsedEvent(), event -> {
+            FilePathTreeItem source = (FilePathTreeItem) event.getSource();
+            if (source.isDirectory && !source.isExpanded()) {
+                ImageView imageView = (ImageView) source.getGraphic();
+                imageView.setImage(folderCollapsedImage);
             }
         });
     }
@@ -101,5 +98,13 @@ public class FilePathTreeItem<T> extends TreeItem<String> {
 
     public String getFullPath() {
         return fullPath;
+    }
+
+    public void setFullPath(String fullPath) {
+        this.fullPath = fullPath;
+    }
+
+    public void setDirectory(Boolean directory) {
+        isDirectory = directory;
     }
 }

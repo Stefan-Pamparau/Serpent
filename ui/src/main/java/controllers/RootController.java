@@ -1,5 +1,6 @@
 package controllers;
 
+import folderTreeView.FilePathTreeCell;
 import folderTreeView.FilePathTreeItem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,6 +49,7 @@ public class RootController implements Initializable {
     private void initializeFolderStructureTreeView() {
         folderStructureTreeView.prefHeightProperty().bind(root.prefHeightProperty());
         folderStructureTreeView.setEditable(true);
+        folderStructureTreeView.setCellFactory((TreeView<String> p)->new FilePathTreeCell());
         String hostName = "computer";
         try {
             hostName = InetAddress.getLocalHost().getHostName();
@@ -59,8 +61,9 @@ public class RootController implements Initializable {
             FilePathTreeItem filePathTreeItem = new FilePathTreeItem(rootDirectory);
             rootNode.getChildren().add(filePathTreeItem);
         }
-        rootNode.setExpanded(true);
+
         folderStructureTreeView.setRoot(rootNode);
+        rootNode.setExpanded(true);
     }
 
     private void initializeFilesTabPane() {

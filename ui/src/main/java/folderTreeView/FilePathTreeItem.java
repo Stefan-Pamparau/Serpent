@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import javafx.event.EventHandler;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,14 +28,13 @@ public class FilePathTreeItem extends TreeItem<String> {
         setItemValue(path);
         addExpandedItemEventHandler();
         addCollapsedItemEventHandler();
-
-        this.getChildren().add(new TreeItem<String>("make it expandable"));
     }
 
     private void checkIfPathIsDirectory(Path path) {
         if (Files.isDirectory(path)) {
             this.isDirectory = true;
             this.setGraphic(new ImageView(folderCollapsedImage));
+            this.getChildren().add(new TreeItem<>("make it expandable"));
         } else {
             this.isDirectory = false;
             this.setGraphic(new ImageView(fileImage));
@@ -58,7 +56,7 @@ public class FilePathTreeItem extends TreeItem<String> {
     private void addExpandedItemEventHandler() {
         this.addEventHandler(TreeItem.<String>branchExpandedEvent(), event -> {
             FilePathTreeItem source = (FilePathTreeItem) event.getSource();
-            if (source.isDirectory() && source.isExpanded()) {
+            if (source.isDirectory()) {
                 ImageView imageView = (ImageView) source.getGraphic();
                 imageView.setImage(folderExpandedImage);
             }
@@ -85,7 +83,7 @@ public class FilePathTreeItem extends TreeItem<String> {
     private void addCollapsedItemEventHandler() {
         this.addEventHandler(TreeItem.<String>branchCollapsedEvent(), event -> {
             FilePathTreeItem source = (FilePathTreeItem) event.getSource();
-            if (source.isDirectory && !source.isExpanded()) {
+            if (source.isDirectory) {
                 ImageView imageView = (ImageView) source.getGraphic();
                 imageView.setImage(folderCollapsedImage);
             }
@@ -96,15 +94,15 @@ public class FilePathTreeItem extends TreeItem<String> {
         return isDirectory;
     }
 
+    public void setDirectory(Boolean directory) {
+        isDirectory = directory;
+    }
+
     public String getFullPath() {
         return fullPath;
     }
 
     public void setFullPath(String fullPath) {
         this.fullPath = fullPath;
-    }
-
-    public void setDirectory(Boolean directory) {
-        isDirectory = directory;
     }
 }

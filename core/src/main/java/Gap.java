@@ -7,6 +7,7 @@ public class Gap {
     private int capacity;
     private int textLength;
     private List<Integer> cursors;
+    private int numberOfLines;
 
 
     /**
@@ -22,6 +23,7 @@ public class Gap {
         this.textLength = 0;
         this.cursors = new ArrayList<>();
         this.cursors.add(0);
+        this.numberOfLines = 1;
     }
 
 
@@ -31,9 +33,11 @@ public class Gap {
             buffer = reallocateGapBuffer();
         }
         if (gapStart < gapEnd) {
-                buffer[gapStart] = c;
-                gapStart++;
-                textLength++;
+            buffer[gapStart] = c;
+            gapStart++;
+            textLength++;
+            if (c.equals('\n'))
+                numberOfLines++;
         }
     }
 
@@ -48,6 +52,7 @@ public class Gap {
             insertHelper(c);
             cursors.set(cursorPos, cursors.get(cursorPos) + cursorPos + 1);
         }
+        System.out.println("Cursors: " + Collections.singleton(cursors));
     }
 
 
@@ -65,12 +70,14 @@ public class Gap {
             jumpTo(cursors.get(cursorPos));
             if (gapStart > 0) {
                 gapStart--;
+                if (buffer[gapStart].equals('\n'))
+                    numberOfLines--;
                 cursors.set(cursorPos, cursors.get(cursorPos) - cursorPos - delta);
                 this.textLength--;
             }
         }
         removeDuplicateCursors();
-        System.out.println(Collections.singletonList(cursors));
+        System.out.println("Cursors: " + Collections.singletonList(cursors));
     }
 
 
@@ -81,6 +88,8 @@ public class Gap {
         for (int cursorPos = cursors.size() - 1; cursorPos >= 0; cursorPos--) {
             jumpTo(cursors.get(cursorPos));
             if (gapEnd < this.capacity - 1) {
+                if (buffer[gapEnd].equals('\n'))
+                    numberOfLines--;
                 gapEnd++;
                 this.textLength--;
             }
@@ -103,11 +112,6 @@ public class Gap {
         System.arraycopy(this.buffer, 0, newBuffer, 0, gapStart);
         System.arraycopy(this.buffer, gapEnd, newBuffer, this.capacity - (this.buffer.length - gapEnd),
                 this.buffer.length - gapEnd);
-
-        for (int cursorPos = cursors.size() - 1; cursorPos >= 0; cursorPos--) {
-            if (cursors.get(cursorPos) >= gapEnd)
-                cursors.set(cursorPos, this.capacity - (this.buffer.length - cursors.get(cursorPos)));
-        }
 
         this.gapEnd = this.capacity - (this.buffer.length - gapEnd);
 
@@ -139,6 +143,10 @@ public class Gap {
     }
 
 
+    /**
+     * Move cursor to the given position.
+     * @param position - new cursor position
+     */
     public void jumpTo(int position) {
         int delta = Math.abs(position - gapStart);
         for (int i = 0; i < delta; i++)
@@ -209,13 +217,13 @@ public class Gap {
     }
 
 
-    public int getCursorPos() {
-        return gapStart;
+    public List<Integer> getCursors() {
+        return this.cursors;
     }
 
 
-    public boolean hasSpace() {
-        return gapStart < gapEnd;
+    public int getNumberOfLines() {
+        return numberOfLines;
     }
 
 
@@ -232,28 +240,13 @@ public class Gap {
     }
 
 
-    public void setGapStart(int gapStart) {
-        this.gapStart = gapStart;
-    }
-
-
     public int getGapEnd() {
         return gapEnd;
     }
 
 
-    public void setGapEnd(int gapEnd) {
-        this.gapEnd = gapEnd;
-    }
-
-
     public int getCapacity() {
         return capacity;
-    }
-
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
     }
 
 

@@ -25,12 +25,13 @@ public class TestBuffer extends JPanel implements ActionListener {
                 c = e.getKeyChar();
                 if (c.equals('\b')) {
                     text.backspace();
-                } else if (!Character.isISOControl(c)){
+                } else if (!Character.isISOControl(c) || c.equals('\n')){
                     text.insert(c);
                     System.out.println("Status: " + text.getTextLength() + " / " + text.getCapacity());
                 }
                 textArea.setText(text.toString());
                 textField.selectAll();
+                System.out.println("Nr. of lines: " + text.getNumberOfLines());
             }
 
             @Override
@@ -42,8 +43,10 @@ public class TestBuffer extends JPanel implements ActionListener {
 
                 if (e.getKeyCode() == KeyEvent.VK_CONTROL)
                     text.addCursor(0);
-                if (e.getKeyCode() == KeyEvent.VK_DELETE)
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     text.delete();
+                    System.out.println("Nr. of lines: " + text.getNumberOfLines());
+                }
             }
 
             @Override

@@ -1,3 +1,5 @@
+import core.Terminal;
+
 public class TestTerminal {
     public static void main(String[] args) {
         Terminal term = new Terminal();

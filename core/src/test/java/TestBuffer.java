@@ -6,6 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 
+import core.Gap;
+
 public class TestBuffer extends JPanel implements ActionListener {
     protected JTextField textField;
     protected JTextArea textArea;

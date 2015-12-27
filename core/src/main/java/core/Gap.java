@@ -1,3 +1,5 @@
+package core;
+
 import java.util.*;
 
 public class Gap {
@@ -11,7 +13,7 @@ public class Gap {
 
 
     /**
-     * Gap buffer with support for multiple cursors.
+     * core.Gap buffer with support for multiple cursors.
      * It automatically reallocates the space after a threshold of 80% has been reached.
      * @param capacity - initial capacity before reallocation
      */

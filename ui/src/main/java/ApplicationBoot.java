@@ -1,12 +1,13 @@
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import controllers.RootController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class ApplicationBoot extends Application {
     public static void main(String[] args) {
@@ -20,6 +21,7 @@ public class ApplicationBoot extends Application {
         Scene scene = new Scene(root, 1000, 1000);
         initializeController(primaryStage, fxmlLoader);
         bindRootToScene(scene, root);
+        addApplicationClosedListener(primaryStage, fxmlLoader);
         primaryStage.setTitle("Serpent");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -35,5 +37,12 @@ public class ApplicationBoot extends Application {
     private void bindRootToScene(Scene scene, GridPane root) {
         root.prefHeightProperty().bind(scene.heightProperty());
         root.prefWidthProperty().bind(scene.widthProperty());
+    }
+
+    private void addApplicationClosedListener(Stage primaryStage, FXMLLoader fxmlLoader) {
+        primaryStage.setOnCloseRequest(event -> {
+            RootController rootController = fxmlLoader.getController();
+            rootController.gracefulShutdown();
+        });
     }
 }

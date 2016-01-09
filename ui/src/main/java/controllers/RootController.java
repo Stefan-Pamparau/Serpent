@@ -92,6 +92,14 @@ public class RootController implements Initializable {
         File file = fileChooser.showOpenDialog(primaryStage);
     }
 
+    public void handleStartServer(ActionEvent actionEvent) {
+
+    }
+
+    public void handleConnectToServer(ActionEvent actionEvent) {
+
+    }
+
     public void handleExitFileAction(ActionEvent actionEvent) {
         System.exit(0);
     }

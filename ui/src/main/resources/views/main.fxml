@@ -11,6 +11,10 @@
                       onAction="#handleNewFileAction"/>
             <MenuItem fx:id="fileMenuOpenItem" text="%main.root.optionsMenuBar.fileMenu.openFile"
                       onAction="#handleOpenFileAction"/>
+            <MenuItem fx:id="fileMenuStartServerItem" text="%main.root.optionsMenuBar.fileMenu.startServer"
+                      onAction="#handleStartServer"/>
+            <MenuItem fx:id="fileMenuStartConnectToServer" text="%main.root.optionsMenuBar.fileMenu.connectToServer"
+                      onAction="#handleConnectToServer"/>
             <SeparatorMenuItem/>
             <MenuItem fx:id="fileMenuExitItem" text="%main.root.optionsMenuBar.fileMenu.exit"
                       onAction="#handleExitFileAction"/>

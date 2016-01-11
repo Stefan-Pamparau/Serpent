@@ -1,15 +1,20 @@
+import core.Gap;
+
 import java.net.*;
 import java.io.*;
 
 /**
  * Created by bogdy on 12/20/15.
  */
+
 public class Client
 {
+
+    private static Gap g;
     //this is for testing purposes
     public static void main(String args[])
     {
-
+        g = new Gap(128);
         String hostName = "127.0.0.1";
         int port = 4444;
         Socket commSocket = null;
@@ -26,6 +31,25 @@ public class Client
                 is = commSocket.getInputStream();
                 ois = new ObjectInputStream(is);
                 receivedCommand = (Command) ois.readObject();
+                switch (receivedCommand.getType())
+                {
+                    case INSERT:
+                        Insert ins = (Insert)receivedCommand;
+
+                        g.moveKeyLeft();
+                        g.moveKeyLeft();
+
+                        g.insert(receivedCommand.getC());
+
+                        g.moveKeyRight();
+                        g.moveKeyRight();
+
+                        System.out.println(ins.getPosition());
+                        System.out.println(g);
+                        break;
+                    case DELETE:
+                        break;
+                }
             }
         }
         catch(IOException e) {

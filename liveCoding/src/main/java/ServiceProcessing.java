@@ -24,7 +24,7 @@ public class ServiceProcessing implements Runnable
 
     public void addCommand(Command receivedCommand)
     {
-        outCommand = new Command(receivedCommand.getTest());
+        outCommand = receivedCommand;
     }
 
 

@@ -4,8 +4,14 @@ import java.net.Socket;
 /**
  * Created by bogdy on 12/21/15.
  */
+
+import core.Gap;
+
 public class ClientOutput implements Runnable
 {
+
+    private int cPos = 0;
+
     //for testing purposes
     public void run()
     {
@@ -22,7 +28,15 @@ public class ClientOutput implements Runnable
             String userInput;
             while((userInput = stdIn.readLine())!=null)
             {
-                Command sendCommand = new Command(userInput);
+                Command sendCommand;
+                Character c = userInput.charAt(0);
+                if(cPos>2)
+                {
+                    sendCommand = new Insert(cPos-2, userInput.charAt(0));
+                    cPos++;
+                }
+                else
+                    sendCommand = new Insert(cPos++, userInput.charAt(0));
                 oos.writeObject(sendCommand);
             }
         }

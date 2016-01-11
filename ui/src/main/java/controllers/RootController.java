@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import core.Gap;
 import folderTreeView.FilePathTreeCell;
 import folderTreeView.FilePathTreeItem;
 import javafx.event.ActionEvent;
@@ -24,6 +25,7 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import textInputControl.GapTextArea;
+import util.FilesUtilities;
 
 public class RootController implements Initializable {
     private static Image computerImage = new Image(ClassLoader.getSystemResourceAsStream("images/computer/computer.png"));
@@ -86,8 +88,8 @@ public class RootController implements Initializable {
         if (result.get() == normalTextButtonType) {
             TextArea text = new TextArea();
             Tab tab = new Tab("Normal text", text);
-            GapTextArea gapBuffer = new GapTextArea("", text, tab);
-            gapTextList.add(gapBuffer);
+            GapTextArea gapTextArea = new GapTextArea(text, tab);
+            gapTextList.add(gapTextArea);
             filesTabPane.getTabs().add(tab);
         } else if(result.get() == richTextButtonType){
             filesTabPane.getTabs().add(new Tab("Rich text", new HTMLEditor()));
@@ -97,6 +99,12 @@ public class RootController implements Initializable {
     public void handleOpenFileAction(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(primaryStage);
+        TextArea text = new TextArea();
+        Tab tab = new Tab("Normal text", text);
+        Gap gapBuffer = FilesUtilities.readFromFile(file);
+        GapTextArea gapTextArea = new GapTextArea("", text, tab, gapBuffer);
+        gapTextList.add(gapTextArea);
+        filesTabPane.getTabs().add(tab);
     }
 
     public void handleStartServer(ActionEvent actionEvent) {
@@ -108,6 +116,7 @@ public class RootController implements Initializable {
     }
 
     public void handleExitFileAction(ActionEvent actionEvent) {
+        gracefulShutdown();
         System.exit(0);
     }
 

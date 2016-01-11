@@ -3,25 +3,43 @@
  */
 
 import java.io.Serializable;
-public class Command implements Serializable
+
+public abstract class Command implements Serializable
 {
-    protected String test; //this is for testing purposes
+    private int position;
+    private Character c;
+
+    public int getPosition()
+    {
+        return position;
+    }
+
+    public void setPosition(int position)
+    {
+        this.position = position;
+    }
+
+    public Character getC()
+    {
+        return c;
+    }
+
+    public void setC(Character c)
+    {
+        this.c = c;
+    }
+
+
     public void undo(){};
     public void redo(){};
 
-    public Command()
+
+    public Command(int position, Character c)
     {
-        test = "test";
+        this.position = position;
+        this.c = c;
     }
 
-    public Command(String inString)
-    {
-        test = inString;
-    }
-
-    public String getTest()
-    {
-        return test;
-    } //for testing purposes
+    public abstract command_type getType();
 
 }

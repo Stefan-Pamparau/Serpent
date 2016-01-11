@@ -3,13 +3,14 @@
  */
 public class Delete extends Command {
 
-    public Delete()
+    public Delete(int position, Character c)
     {
-        super();
+        super(position, c);
     }
 
-    public Delete(String inString)
+    @Override
+    public command_type getType()
     {
-        super(inString);
+        return command_type.DELETE;
     }
 }

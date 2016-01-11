@@ -26,7 +26,6 @@ public class Client
                 is = commSocket.getInputStream();
                 ois = new ObjectInputStream(is);
                 receivedCommand = (Command) ois.readObject();
-                System.out.println("echo from server : " + receivedCommand.getTest());
             }
         }
         catch(IOException e) {

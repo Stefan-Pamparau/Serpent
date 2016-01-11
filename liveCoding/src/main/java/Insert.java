@@ -3,14 +3,14 @@
  */
 public class Insert extends Command {
 
-    public Insert()
+    public Insert(int position, Character c)
     {
-        super();
+        super(position, c);
     }
 
-    public Insert(String inString)
+    @Override
+    public command_type getType()
     {
-        super(inString);
+        return command_type.INSERT;
     }
-
 }

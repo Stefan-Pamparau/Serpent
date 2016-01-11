@@ -8,6 +8,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import folderTreeView.FilePathTreeCell;
@@ -15,16 +16,11 @@ import folderTreeView.FilePathTreeItem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
+import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import textInputControl.GapTextArea;
@@ -41,12 +37,18 @@ public class RootController implements Initializable {
     @FXML
     private TabPane filesTabPane;
     private List<GapTextArea> gapTextList;
+    private ButtonType normalTextButtonType;
+    private ButtonType richTextButtonType;
+    private ButtonType cancelButtonType;
 
     public void initialize(URL location, ResourceBundle resources) {
         initializeOptionsMenuBar();
         initializeFolderStructureTreeView();
         initializeFilesTabPane();
         gapTextList = new ArrayList<>();
+        normalTextButtonType = new ButtonType("Normal text");
+        richTextButtonType = new ButtonType("Rich text");
+        cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
     }
 
     private void initializeOptionsMenuBar() {
@@ -80,11 +82,16 @@ public class RootController implements Initializable {
     public void handleNewFileAction(ActionEvent actionEvent) {
 //        FileChooser fileChooser = new FileChooser();
 //        fileChooser.showSaveDialog(primaryStage);
-        TextArea text = new TextArea();
-        Tab tab = new Tab("Text", text);
-        GapTextArea gapBuffer = new GapTextArea("", text, tab);
-        gapTextList.add(gapBuffer);
-        filesTabPane.getTabs().add(tab);
+        Optional<ButtonType> result = createChooseDialog();
+        if (result.get() == normalTextButtonType) {
+            TextArea text = new TextArea();
+            Tab tab = new Tab("Normal text", text);
+            GapTextArea gapBuffer = new GapTextArea("", text, tab);
+            gapTextList.add(gapBuffer);
+            filesTabPane.getTabs().add(tab);
+        } else if(result.get() == richTextButtonType){
+            filesTabPane.getTabs().add(new Tab("Rich text", new HTMLEditor()));
+        }
     }
 
     public void handleOpenFileAction(ActionEvent actionEvent) {
@@ -110,5 +117,15 @@ public class RootController implements Initializable {
 
     public void gracefulShutdown() {
         gapTextList.forEach(GapTextArea::closeCursorThread);
+    }
+
+    private Optional<ButtonType> createChooseDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Choose text type");
+        alert.setHeaderText("Please select your desired text type");
+        alert.setContentText("Given options are");
+
+        alert.getButtonTypes().setAll(normalTextButtonType, richTextButtonType, cancelButtonType);
+        return alert.showAndWait();
     }
 }

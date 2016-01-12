@@ -337,9 +337,13 @@ public class RootController implements Initializable {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == insertClient) {
+                Integer age = new Integer(-1);
+                if(ageTextfield.getText().matches("\\d+")) {
+                    age = Integer.parseInt(ageTextfield.getText());
+                }
                 return new Client(firstNameTextfield.getText(), surnameTextfield.getText(), addressTextfield.getText(),
                         emailTextfield.getText(), passwordTextField.getText(), phoneTextfield.getText(), sexTextfield.getText(),
-                        Integer.parseInt(ageTextfield.getText()));
+                        age);
             }
             return null;
         });

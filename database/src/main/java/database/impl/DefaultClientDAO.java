@@ -1,15 +1,15 @@
 package database.impl;
 
-import database.DatabaseConnectionController;
-import database.ClientDAO;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import model.Client;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import database.ClientDAO;
+import database.DatabaseConnectionController;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import model.Client;
 
 /**
  * Created by stefan.pamparau on 1/12/2016.
@@ -24,20 +24,22 @@ public class DefaultClientDAO implements ClientDAO {
     public Client getClient(String email, String password) {
         String query = "select * from user where email = ? and password = ?;";
         Client client = null;
-        try {
-            Connection connection = databaseConnectionController.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
+        if (!email.equals("") && !password.equals("")) {
+            try {
+                Connection connection = databaseConnectionController.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, email);
+                preparedStatement.setString(2, password);
 
-            ResultSet result = preparedStatement.executeQuery();
-            result.next();
-            client = new Client(result.getString(2), result.getString(3), result.getString(4), result.getString(5),
-                    result.getString(6), result.getString(7), result.getString(8), result.getInt(9));
-        } catch (SQLException e) {
-            e.printStackTrace();
+                ResultSet result = preparedStatement.executeQuery();
+                if (result.next()) {
+                    client = new Client(result.getString(2), result.getString(3), result.getString(4), result.getString(5),
+                            result.getString(6), result.getString(7), result.getString(8), result.getInt(9));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
         return client;
     }
 

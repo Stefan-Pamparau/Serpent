@@ -330,18 +330,14 @@ public class RootController implements Initializable {
 
         dialog.setResizable(true);
 
-        Label firstNameLabel = new Label("FirstName: ");
-        Label surnameLabel = new Label("Surname: ");
+        Label emailLabel = new Label("Email: ");
 
-        TextField firstNameTextfield = new TextField();
-        TextField surnameTextfield = new TextField();
+        TextField emailTextfield = new TextField();
 
         GridPane grid = new GridPane();
-        grid.add(firstNameLabel, 1, 1);
-        grid.add(surnameLabel, 1, 2);
+        grid.add(emailLabel, 1, 1);
 
-        grid.add(firstNameTextfield, 2, 1);
-        grid.add(surnameTextfield, 2, 2);
+        grid.add(emailTextfield, 2, 1);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -350,7 +346,7 @@ public class RootController implements Initializable {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == insertClient) {
-                return new Client(firstNameTextfield.getText(), surnameTextfield.getText());
+                return new Client(emailTextfield.getText());
             }
             return null;
         });

@@ -12,15 +12,15 @@ public class Client {
     private String sex;
     private Integer age;
 
-    public Client(String firstName, String surname) {
-        this.firstName = firstName;
-        this.surname = surname;
+    public Client(String email) {
+        this.email = email;
     }
 
     public Client(String firstName, String surname, String address, String email, String phone, String sex, Integer age) {
-        this(firstName, surname);
+        this(email);
+        this.firstName = firstName;
+        this.surname = surname;
         this.address = address;
-        this.email = email;
         this.phone = phone;
         this.sex = sex;
         this.age = age;

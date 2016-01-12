@@ -1,5 +1,16 @@
 package controllers;
 
+import java.io.File;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
 import core.Gap;
 import folderTreeView.FilePathTreeCell;
 import folderTreeView.FilePathTreeItem;
@@ -27,17 +38,6 @@ import service.impl.DefaultDatabaseService;
 import textInputControl.GapTextArea;
 import util.FileType;
 import util.FilesUtilities;
-
-import java.io.File;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
 
 public class RootController implements Initializable {
     private static Image computerImage = new Image(ClassLoader.getSystemResourceAsStream("images/computer/computer.png"));
@@ -127,18 +127,32 @@ public class RootController implements Initializable {
     }
 
     public void handleConnectToServer(ActionEvent actionEvent) {
-
+        if (databaseService.isConnected()) {
+            Optional<Client> result = createGetClientDialog();
+            if (result.isPresent()) {
+                if (clientService.getClient(result.get().getEmail(), result.get().getPassword()) != null) {
+                    System.out.println(clientService.getClient(result.get().getEmail(), result.get().getPassword()));
+                } else {
+                    displayInformationDialog("Error", "Wrong credentials", "Wrong credentials");
+                }
+            }
+        } else {
+            displayInformationDialog("Error", "Not connected to database", "Not connected to database");
+        }
     }
 
     public void handleConnectToDatabase(ActionEvent actionEvent) {
         Optional<Pair<String, String>> result = createLoginDialog();
 
         result.ifPresent(usernamePassword -> {
-            if(usernamePassword.getKey().equals("admin") && usernamePassword.getValue().equals("admin")) {
+            if (usernamePassword.getKey().equals("admin") && usernamePassword.getValue().equals("admin")) {
                 databaseService.connectToDatabase(ClientType.ADMIN);
-            }
-            else {
-                databaseService.connectToDatabase(ClientType.NORMAL);
+            } else {
+                if (usernamePassword.getKey().equals("client") && usernamePassword.getValue().equals("client")) {
+                    databaseService.connectToDatabase(ClientType.NORMAL);
+                } else {
+                    displayInformationDialog("Wrong credentials", "Wrong credentials", "Please try again with correct credentials");
+                }
             }
         });
     }
@@ -148,18 +162,24 @@ public class RootController implements Initializable {
     }
 
     public void handleInsertClient(ActionEvent actionEvent) {
-        Optional<Client> result = createInsertClientDialog();
-
-        if(result.isPresent()) {
-            clientService.insertClient(result.get());
+        if (databaseService.isConnected()) {
+            Optional<Client> result = createInsertClientDialog();
+            if (result.isPresent()) {
+                clientService.insertClient(result.get());
+            }
+        } else {
+            displayInformationDialog("Error", "Not connected to database", "Not connected to database");
         }
     }
 
     public void handleDeleteClient(ActionEvent actionEvent) {
-        Optional<Client> result = createDeleteClientDialog();
-
-        if(result.isPresent()) {
-            clientService.deleteClient(result.get());
+        if (databaseService.isConnected()) {
+            Optional<Client> result = createDeleteClientDialog();
+            if (result.isPresent()) {
+                clientService.deleteClient(result.get());
+            }
+        } else {
+            displayInformationDialog("Error", "Not connected to database", "Not connected to database");
         }
     }
 
@@ -277,6 +297,7 @@ public class RootController implements Initializable {
         Label surnameLabel = new Label("Surname: ");
         Label addressLabel = new Label("Address: ");
         Label emailLabel = new Label("Email: ");
+        Label passwordLabel = new Label("Password: ");
         Label phoneLabel = new Label("Phone: ");
         Label sexLabel = new Label("Sex: ");
         Label ageLabel = new Label("Age: ");
@@ -285,6 +306,7 @@ public class RootController implements Initializable {
         TextField surnameTextfield = new TextField();
         TextField addressTextfield = new TextField();
         TextField emailTextfield = new TextField();
+        PasswordField passwordTextField = new PasswordField();
         TextField phoneTextfield = new TextField();
         TextField sexTextfield = new TextField();
         TextField ageTextfield = new TextField();
@@ -294,17 +316,19 @@ public class RootController implements Initializable {
         grid.add(surnameLabel, 1, 2);
         grid.add(addressLabel, 1, 3);
         grid.add(emailLabel, 1, 4);
-        grid.add(phoneLabel, 1, 5);
-        grid.add(sexLabel, 1, 6);
-        grid.add(ageLabel, 1, 7);
+        grid.add(passwordLabel, 1, 5);
+        grid.add(phoneLabel, 1, 6);
+        grid.add(sexLabel, 1, 7);
+        grid.add(ageLabel, 1, 8);
 
         grid.add(firstNameTextfield, 2, 1);
         grid.add(surnameTextfield, 2, 2);
         grid.add(addressTextfield, 2, 3);
         grid.add(emailTextfield, 2, 4);
-        grid.add(phoneTextfield, 2, 5);
-        grid.add(sexTextfield, 2, 6);
-        grid.add(ageTextfield, 2, 7);
+        grid.add(passwordTextField, 2, 5);
+        grid.add(phoneTextfield, 2, 6);
+        grid.add(sexTextfield, 2, 7);
+        grid.add(ageTextfield, 2, 8);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -314,8 +338,43 @@ public class RootController implements Initializable {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == insertClient) {
                 return new Client(firstNameTextfield.getText(), surnameTextfield.getText(), addressTextfield.getText(),
-                        emailTextfield.getText(), phoneTextfield.getText(), sexTextfield.getText(),
+                        emailTextfield.getText(), passwordTextField.getText(), phoneTextfield.getText(), sexTextfield.getText(),
                         Integer.parseInt(ageTextfield.getText()));
+            }
+            return null;
+        });
+
+        return dialog.showAndWait();
+    }
+
+    private Optional<Client> createGetClientDialog() {
+        Dialog<Client> dialog = new Dialog<>();
+        dialog.setTitle("Login");
+        dialog.setHeaderText("Please insert your login credentials");
+
+        dialog.setResizable(true);
+
+        Label emailLabel = new Label("Email: ");
+        Label passwordLabel = new Label("Password: ");
+
+        TextField emailTextfield = new TextField();
+        PasswordField passwordTextField = new PasswordField();
+
+        GridPane grid = new GridPane();
+        grid.add(emailLabel, 1, 1);
+        grid.add(passwordLabel, 1, 2);
+
+        grid.add(emailTextfield, 2, 1);
+        grid.add(passwordTextField, 2, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        ButtonType insertClient = new ButtonType("Connect", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(insertClient, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == insertClient) {
+                return new Client(emailTextfield.getText(), passwordTextField.getText());
             }
             return null;
         });
@@ -367,5 +426,15 @@ public class RootController implements Initializable {
         for (int i = 0; i < charArray.length; i++) {
             gapBuffer.insert(charArray[i]);
         }
+    }
+
+    private void displayInformationDialog(String title, String header, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
     }
 }

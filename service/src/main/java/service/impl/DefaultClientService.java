@@ -16,8 +16,8 @@ public class DefaultClientService implements ClientService {
         this.clientDAO = new DefaultClientDAO(databaseService.getConnectionController());
     }
 
-    public void getClient(String email) {
-        clientDAO.getClient(email);
+    public Client getClient(String email, String password) {
+        return clientDAO.getClient(email, password);
     }
 
     public void insertClient(Client client) {

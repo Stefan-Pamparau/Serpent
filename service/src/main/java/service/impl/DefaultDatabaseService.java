@@ -9,6 +9,7 @@ import service.DatabaseService;
  * Created by stefan.pamparau on 1/12/2016.
  */
 public class DefaultDatabaseService implements DatabaseService {
+
     private DatabaseConnectionController databaseConnectionController;
 
     public DefaultDatabaseService() {
@@ -25,5 +26,9 @@ public class DefaultDatabaseService implements DatabaseService {
 
     public DatabaseConnectionController getConnectionController() {
         return databaseConnectionController;
+    }
+
+    public boolean isConnected() {
+        return databaseConnectionController.getConnection() != null;
     }
 }

@@ -12,4 +12,6 @@ public interface DatabaseService {
     void disconnectFromDatabase();
 
     DatabaseConnectionController getConnectionController();
+
+    boolean isConnected();
 }

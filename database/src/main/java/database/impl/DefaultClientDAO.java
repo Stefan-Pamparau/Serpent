@@ -2,6 +2,7 @@ package database.impl;
 
 import database.DatabaseConnectionController;
 import database.ClientDAO;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import model.Client;
 
@@ -20,17 +21,19 @@ public class DefaultClientDAO implements ClientDAO {
         this.databaseConnectionController = databaseConnectionController;
     }
 
-    public Client getClient(String email) {
-        String query = "select from user where email = ?;";
+    public Client getClient(String email, String password) {
+        String query = "select * from user where email = ? and password = ?;";
         Client client = null;
         try {
             Connection connection = databaseConnectionController.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
 
-            ResultSet result = preparedStatement.executeQuery(query);
-            client = new Client(result.getString(1), result.getString(2), result.getString(3), result.getString(4),
-                    result.getString(4), result.getString(5), result.getInt(6));
+            ResultSet result = preparedStatement.executeQuery();
+            result.next();
+            client = new Client(result.getString(2), result.getString(3), result.getString(4), result.getString(5),
+                    result.getString(6), result.getString(7), result.getString(8), result.getInt(9));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -39,22 +42,23 @@ public class DefaultClientDAO implements ClientDAO {
     }
 
     public void insertClient(Client client) {
-        String query = " insert into user (firstname, surname, address, email, phone, sex, age)"
-                + " values (?, ?, ?, ?, ?, ?, ?)";
+        String query = "insert into user(firstname, surname, address, email, password, phone, sex, age)"
+                + " values (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             Connection connection = databaseConnectionController.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, client.getFirstname());
+            preparedStatement.setString(1, client.getFirstName());
             preparedStatement.setString(2, client.getSurname());
             preparedStatement.setString(3, client.getAddress());
             preparedStatement.setString(4, client.getEmail());
-            preparedStatement.setString(5, client.getPhone());
-            preparedStatement.setString(6, client.getSex());
-            preparedStatement.setInt(7, client.getAge());
+            preparedStatement.setString(5, client.getPassword());
+            preparedStatement.setString(6, client.getPhone());
+            preparedStatement.setString(7, client.getSex());
+            preparedStatement.setInt(8, client.getAge());
 
-            preparedStatement.execute(query);
+            preparedStatement.execute();
         } catch (SQLException e) {
-            System.out.printf(e.getLocalizedMessage());
+            displayInformationDialog(e.getMessage(), e.getLocalizedMessage(), e.getLocalizedMessage());
         }
     }
 
@@ -65,9 +69,19 @@ public class DefaultClientDAO implements ClientDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, client.getEmail());
 
-            preparedStatement.execute(query);
+            preparedStatement.execute();
         } catch (SQLException e) {
-            System.out.println(e.getLocalizedMessage());
+            displayInformationDialog(e.getMessage(), e.getLocalizedMessage(), e.getLocalizedMessage());
         }
+    }
+
+    private void displayInformationDialog(String title, String header, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
     }
 }

@@ -26,8 +26,8 @@
         <Menu fx:id="databaseMenu" text="%main.root.optionsMenuBar.databaseMenu">
             <MenuItem fx:id="databaseMenuConnectToDatabaseItem" text="%main.root.optionsMenuBar.databaseMenu.connectToDatabase"
                       onAction="#handleConnectToDatabase"/>
-            <MenuItem fx:id="databaseMenuReconnectToDatabaseItem" text="%main.root.optionsMenuBar.databaseMenu.reconnectToDatabase"
-                      onAction="#handleReconnectToDatabase"/>
+            <MenuItem fx:id="databaseMenuDisconnectFromDatabaseItem" text="%main.root.optionsMenuBar.databaseMenu.disconnectFromDatabase"
+                      onAction="#handleDisconnectFromDatabase"/>
             <MenuItem fx:id="databaseMenuInsertClient" text="%main.root.optionsMenuBar.databaseMenu.insertClient"
                       onAction="#handleInsertClient"/>
             <MenuItem fx:id="databaseMenuDeleteClient" text="%main.root.optionsMenuBar.databaseMenu.deleteClient"

@@ -13,6 +13,8 @@
                       onAction="#handleOpenFileAction"/>
             <MenuItem fx:id="fileMenuSaveItem" text="%main.root.optionsMenuBar.fileMenu.saveFile"
                       onAction="#handleSaveFileAction"/>
+            <MenuItem fx:id="terminalMenuItem" text="%main.root.optionsMenuBar.fileMenu.openTerminal"
+                      onAction="#handleOpenTerminalAction"/>
             <SeparatorMenuItem/>
             <MenuItem fx:id="fileMenuExitItem" text="%main.root.optionsMenuBar.fileMenu.exit"
                       onAction="#handleExitFileAction"/>

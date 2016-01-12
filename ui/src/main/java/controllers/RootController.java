@@ -1,5 +1,6 @@
 package controllers;
 
+import java.awt.*;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.URL;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import core.Gap;
+import core.Terminal;
 import folderTreeView.FilePathTreeCell;
 import folderTreeView.FilePathTreeItem;
 import javafx.application.Platform;
@@ -21,6 +23,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
@@ -120,6 +127,11 @@ public class RootController implements Initializable {
                 FilesUtilities.writeToFile(text.getHtmlText(), file.toPath());
             }
         });
+    }
+
+    public void handleOpenTerminalAction(ActionEvent actionEvent) {
+        Terminal terminal = new Terminal();
+        terminal.run();
     }
 
     public void handleStartServer(ActionEvent actionEvent) {

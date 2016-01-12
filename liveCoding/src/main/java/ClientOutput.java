@@ -15,7 +15,7 @@ public class ClientOutput implements Runnable
     //for testing purposes
     public void run()
     {
-        String hostName = "127.0.0.1";
+        String hostName = "192.168.1.102";
         int port = 4444;
         try
         {

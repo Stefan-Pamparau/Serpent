@@ -15,7 +15,7 @@ public class Client
     public static void main(String args[])
     {
         g = new Gap(128);
-        String hostName = "127.0.0.1";
+        String hostName = "192.168.1.102";
         int port = 4444;
         Socket commSocket = null;
         InputStream is = null;

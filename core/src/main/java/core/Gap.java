@@ -198,6 +198,19 @@ public class Gap {
         System.out.println(Collections.singletonList(cursors));
     }
 
+    /**
+     * Move cursor to given position
+     * @param position - new cursor position
+     */
+    public void jumpCursorTo(int position) {
+        int delta = Math.abs(position - gapStart);
+        for (int i = 0; i < delta; i++)
+            if (gapStart < position)
+                moveKeyRight();
+            else
+                moveKeyLeft();
+    }
+
 
     /**
      * Remove cursors that reside at the same position.

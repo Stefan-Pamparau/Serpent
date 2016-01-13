@@ -101,7 +101,8 @@ public class ServerTextArea {
             }
             if (event.getCode() == KeyCode.BACK_SPACE) {
                 System.out.println("Backspace");
-                gapBuffer.backspace();
+                //gapBuffer.backspace();
+                client.sendBackspace(gapBuffer.getCursors().get(0));
             }
             if (event.getCode() == KeyCode.LEFT) {
                 gapBuffer.moveKeyLeft();

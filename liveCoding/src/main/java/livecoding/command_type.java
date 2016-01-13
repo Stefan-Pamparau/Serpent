@@ -6,5 +6,6 @@ package livecoding;
 public enum command_type
 {
     INSERT,
+    BACKSPACE,
     DELETE
 }

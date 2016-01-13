@@ -1,6 +1,5 @@
 package controllers;
 
-import java.awt.*;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.URL;
@@ -23,11 +22,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
@@ -60,11 +54,13 @@ public class RootController implements Initializable {
     @FXML
     private TabPane filesTabPane;
     private List<GapTextArea> gapTextList;
+    private List<ServerTextArea> serverTextAreas;
     private ButtonType normalTextButtonType;
     private ButtonType richTextButtonType;
     private ButtonType cancelButtonType;
     private DatabaseService databaseService;
     private ClientService clientService;
+    private Thread serverThread;
 
     public void initialize(URL location, ResourceBundle resources) {
         initializeRoot();
@@ -72,6 +68,7 @@ public class RootController implements Initializable {
         initializeFolderStructureTreeView();
         initializeFilesTabPane();
         gapTextList = new ArrayList<>();
+        serverTextAreas = new ArrayList<>();
         normalTextButtonType = new ButtonType("Normal text");
         richTextButtonType = new ButtonType("Rich text");
         cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -137,41 +134,44 @@ public class RootController implements Initializable {
     }
 
     public void handleStartServer(ActionEvent actionEvent) {
-        new Thread(new Server()).start();
+        if (serverThread == null) {
+            serverThread = new Thread(new Server());
+            serverThread.start();
+            displayInformationDialog("Server information", "Server started", "Server started!");
+        } else {
+            displayInformationDialog("Server information", "Server started", "Server already started!");
+        }
     }
 
     public void handleConnectToServer(ActionEvent actionEvent) {
-//        if (databaseService.isConnected()) {
-//            Optional<Client> result = createGetClientDialog();
-//            if (result.isPresent()) {
-//                if (clientService.getClient(result.get().getEmail(), result.get().getPassword()) != null) {
-//                    System.out.println(clientService.getClient(result.get().getEmail(), result.get().getPassword()));
-//                } else {
-//                    displayInformationDialog("Error", "Wrong credentials", "Wrong credentials");
+//        if (serverThread != null) {
+//            if (databaseService.isConnected()) {
+//                Optional<Client> result = createGetClientDialog();
+//                if (result.isPresent()) {
+//                    if (clientService.getClient(result.get().getEmail(), result.get().getPassword()) != null) {
+//                        System.out.println(clientService.getClient(result.get().getEmail(), result.get().getPassword()));
+//                        TextArea text = new TextArea();
+//                        Tab tab = new Tab("Normal text", text);
+//                        Gap gapBuffer = new Gap(128);
+//                        ServerTextArea serverTextArea = new ServerTextArea("", text, tab, gapBuffer);
+//                        serverTextAreas.add(serverTextArea);
+//                        filesTabPane.getTabs().add(tab);
+//                    } else {
+//                        displayInformationDialog("Error", "Wrong credentials", "Wrong credentials");
+//                    }
 //                }
+//            } else {
+//                displayInformationDialog("Error", "Not connected to database", "Not connected to database");
 //            }
 //        } else {
-//            displayInformationDialog("Error", "Not connected to database", "Not connected to database");
+//            displayInformationDialog("Error", "Server not started!", "Server not started!");
 //        }
-       // if (file != null) {
-            TextArea text = new TextArea();
-            Tab tab = new Tab("Normal text", text);
-         //   String textFromFile = FilesUtilities.readFromFile(file);
-            //switch (determineFileType(textFromFile)) {
-             //   case NORMAL:
-                    Gap gapBuffer = new Gap(128);
-                  //  copyTextToGap(textFromFile, gapBuffer);
-                    ServerTextArea serverTextArea = new ServerTextArea("", text, tab, gapBuffer);
-                    //gapTextList.add(gapTextArea);
-                    filesTabPane.getTabs().add(tab);
-              ///      break;
-              //  case RICH:
-                    //HTMLEditor textArea = new HTMLEditor();
-                    //textArea.setHtmlText(textFromFile);
-                    //filesTabPane.getTabs().add(new Tab("Rich text", textArea));
-                //    break;
-  //          }
-       // }
+        TextArea text = new TextArea();
+        Tab tab = new Tab("Normal text", text);
+        Gap gapBuffer = new Gap(128);
+        ServerTextArea serverTextArea = new ServerTextArea("", text, tab, gapBuffer);
+        serverTextAreas.add(serverTextArea);
+        filesTabPane.getTabs().add(tab);
     }
 
     public void handleConnectToDatabase(ActionEvent actionEvent) {
@@ -227,6 +227,10 @@ public class RootController implements Initializable {
 
     public void gracefulShutdown() {
         gapTextList.forEach(GapTextArea::closeCursorThread);
+        serverTextAreas.forEach(ServerTextArea::closeCursorThread);
+        if (serverThread != null) {
+            serverThread.interrupt();
+        }
     }
 
     private void initializeRoot() {
@@ -371,7 +375,7 @@ public class RootController implements Initializable {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == insertClient) {
                 Integer age = new Integer(-1);
-                if(ageTextfield.getText().matches("\\d+")) {
+                if (ageTextfield.getText().matches("\\d+")) {
                     age = Integer.parseInt(ageTextfield.getText());
                 }
                 return new Client(firstNameTextfield.getText(), surnameTextfield.getText(), addressTextfield.getText(),

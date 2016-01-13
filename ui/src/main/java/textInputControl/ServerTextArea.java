@@ -76,12 +76,7 @@ public class ServerTextArea {
                             e.printStackTrace();
                         }
                     }
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            textArea.setText(gapBuffer.toString());
-                        }
-                    });
+                    Platform.runLater(() -> textArea.setText(gapBuffer.toString()));
                 }
             }
         };
@@ -92,7 +87,7 @@ public class ServerTextArea {
         textArea.setOnKeyTyped(event -> {
             String c = event.getCharacter();
             if (!Character.isISOControl(c.toCharArray()[0])) {
-                gapBuffer.insert(c.toCharArray()[0]);
+                //gapBuffer.insert(c.toCharArray()[0]);
                 client.sendInsert(gapBuffer.getCursors().get(0), c.toCharArray()[0]);
             }
         });
@@ -101,7 +96,7 @@ public class ServerTextArea {
     private void addKeyPressedEventHandler() {
         textArea.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                gapBuffer.insert('\n');
+                //gapBuffer.insert('\n');
                 client.sendInsert(gapBuffer.getCursors().get(0), '\n');
             }
             if (event.getCode() == KeyCode.BACK_SPACE) {
@@ -118,7 +113,7 @@ public class ServerTextArea {
                 gapBuffer.addCursor(0);
             }
             if (event.getCode() == KeyCode.DELETE) {
-                gapBuffer.delete();
+                //gapBuffer.delete();
                 client.sendDelete(gapBuffer.getCursors().get(0));
             }
         });

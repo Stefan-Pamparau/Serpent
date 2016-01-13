@@ -29,7 +29,7 @@ public class FilePathTreeCell extends TreeCell<String> {
         folderContextMenu = new ContextMenu();
         MenuItem addNewFileMenuItem = new MenuItem("New file");
         MenuItem addNewFolderMenuItem = new MenuItem("New folder");
-        MenuItem deleteMenuItem = new MenuItem("livecoding.Delete");
+        MenuItem deleteMenuItem = new MenuItem("Delete");
         folderContextMenu.getItems().addAll(addNewFileMenuItem, addNewFolderMenuItem, deleteMenuItem);
         addNewFileEventHandler(addNewFileMenuItem);
         addNewFolderEventHandler(addNewFolderMenuItem);
@@ -106,7 +106,7 @@ public class FilePathTreeCell extends TreeCell<String> {
                 Files.delete(path);
                 treeItem.getParent().getChildren().removeAll(treeItem);
             } catch (IOException e) {
-                displayInformationDialog("livecoding.Delete error", "Error occurred when deleting" + path.toString(), e.getLocalizedMessage());
+                displayInformationDialog("Delete error", "Error occurred when deleting" + path.toString(), e.getLocalizedMessage());
             }
         });
     }

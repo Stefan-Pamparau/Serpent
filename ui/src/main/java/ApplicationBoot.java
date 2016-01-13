@@ -22,6 +22,7 @@ public class ApplicationBoot extends Application {
         initializeController(primaryStage, fxmlLoader);
         bindRootToScene(scene, root);
         addApplicationClosedListener(primaryStage, fxmlLoader);
+        scene.getStylesheets().add("stylesheets/skin.css");
         primaryStage.setTitle("Serpent");
         primaryStage.setScene(scene);
         primaryStage.show();

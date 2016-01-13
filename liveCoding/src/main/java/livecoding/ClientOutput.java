@@ -11,6 +11,8 @@ public class ClientOutput
 {
 
     private int cPos = 0;
+    private Socket commSocket;
+
 
     //for testing purposes
     public void sendCommand(Command command)
@@ -20,7 +22,6 @@ public class ClientOutput
 
         try
         {
-            Socket commSocket = new Socket(hostName, port);
             OutputStream os = commSocket.getOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(os);
 
@@ -32,5 +33,9 @@ public class ClientOutput
             System.exit(1);
         }
 
+    }
+
+    public void setCommSocket(Socket commSocket) {
+        this.commSocket = commSocket;
     }
 }

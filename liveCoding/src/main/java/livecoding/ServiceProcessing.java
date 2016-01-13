@@ -36,7 +36,7 @@ public class ServiceProcessing implements Runnable
             OutputStream os = incomingSocket.getOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(os);
             new Thread(sip).start();
-            while (true)
+            while (!incomingSocket.isClosed())
             {
                 //we poll to see if we have an outCommand to output to the specified client
                 if (outCommand != null)

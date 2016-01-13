@@ -43,6 +43,7 @@ public class Client implements Runnable
             int delta = 0;
             while (true) {
                 commSocket = new Socket(hostName, port);
+                co.setCommSocket(commSocket);
                 is = commSocket.getInputStream();
                 ois = new ObjectInputStream(is);
                 receivedCommand = (Command) ois.readObject();
@@ -76,6 +77,7 @@ public class Client implements Runnable
 
                         break;
                 }
+                commSocket.close();
             }
         } catch (IOException e) {
             try {
@@ -89,6 +91,7 @@ public class Client implements Runnable
             }
             System.err.println("Couldn't get I/O for the connection to " +
                     hostName);
+            e.printStackTrace();
             //System.exit(1);
         } catch (ClassNotFoundException e) {
             System.out.print("Class command not found! Did you forgot to add it?");

@@ -23,6 +23,10 @@ public class Client implements Runnable
         co.sendCommand(new Insert(position, character));
     }
 
+    public void sendBackspace(int position) {
+        co.sendCommand(new Backspace(position));
+    }
+
     public void sendDelete(int position) {
         co.sendCommand(new Delete(position, null));
     }
@@ -35,19 +39,41 @@ public class Client implements Runnable
         ObjectInputStream ois = null;
         try {
             Command receivedCommand;
+            int cursorPosition;
+            int delta = 0;
             while (true) {
                 commSocket = new Socket(hostName, port);
                 is = commSocket.getInputStream();
                 ois = new ObjectInputStream(is);
                 receivedCommand = (Command) ois.readObject();
+                cursorPosition = gap.getCursors().get(0);
+                delta = cursorPosition - receivedCommand.getPosition() >= 0 ? 1 : 0;
                 switch (receivedCommand.getType()) {
                     case INSERT:
                         Insert ins = (Insert) receivedCommand;
 
+                        gap.jumpCursorTo(receivedCommand.getPosition());
+
                         gap.insert(receivedCommand.getC());
+
+                        gap.jumpCursorTo(cursorPosition + delta);
+
+                        break;
+                    case BACKSPACE:
+                        gap.jumpCursorTo(receivedCommand.getPosition());
+
+                        gap.backspace();
+
+                        gap.jumpCursorTo(cursorPosition - delta);
 
                         break;
                     case DELETE:
+                        gap.jumpCursorTo(receivedCommand.getPosition());
+
+                        gap.delete();
+
+                        gap.jumpCursorTo(cursorPosition - Math.abs(delta - 1));
+
                         break;
                 }
             }

@@ -1,4 +1,4 @@
-/**
+package livecoding; /**
  * Created by bogdy on 12/20/15.
  */
 
@@ -32,7 +32,7 @@ public class ServiceProcessor implements Runnable
         }
         catch(InterruptedException e)
         {
-            System.out.println("ServiceProcessor was interrupted while adding in the Queue!");
+            System.out.println("livecoding.ServiceProcessor was interrupted while adding in the Queue!");
         }
     }
 
@@ -62,7 +62,7 @@ public class ServiceProcessor implements Runnable
             }
             catch(InterruptedException e)
             {
-                 System.out.println("ServiceProcessor was interrupted while taking from the Queue!");
+                 System.out.println("livecoding.ServiceProcessor was interrupted while taking from the Queue!");
             }
         }
     }

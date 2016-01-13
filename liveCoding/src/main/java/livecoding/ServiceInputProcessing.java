@@ -1,4 +1,4 @@
-/**
+package livecoding; /**
  * Created by bogdy on 12/20/15.
  */
 
@@ -52,7 +52,7 @@ public class ServiceInputProcessing implements Runnable
         }
         catch(ClassNotFoundException e)
         {
-            System.out.print("Class Command not found! Did you forgot to add it?");
+            System.out.print("Class livecoding.Command not found! Did you forgot to add it?");
         }
     }
 }

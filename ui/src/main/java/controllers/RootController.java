@@ -36,6 +36,7 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import livecoding.Server;
 import model.Client;
 import model.ClientType;
 import service.ClientService;
@@ -43,6 +44,7 @@ import service.DatabaseService;
 import service.impl.DefaultClientService;
 import service.impl.DefaultDatabaseService;
 import textInputControl.GapTextArea;
+import textInputControl.ServerTextArea;
 import util.FileType;
 import util.FilesUtilities;
 
@@ -135,22 +137,41 @@ public class RootController implements Initializable {
     }
 
     public void handleStartServer(ActionEvent actionEvent) {
-
+        new Thread(new Server()).start();
     }
 
     public void handleConnectToServer(ActionEvent actionEvent) {
-        if (databaseService.isConnected()) {
-            Optional<Client> result = createGetClientDialog();
-            if (result.isPresent()) {
-                if (clientService.getClient(result.get().getEmail(), result.get().getPassword()) != null) {
-                    System.out.println(clientService.getClient(result.get().getEmail(), result.get().getPassword()));
-                } else {
-                    displayInformationDialog("Error", "Wrong credentials", "Wrong credentials");
-                }
-            }
-        } else {
-            displayInformationDialog("Error", "Not connected to database", "Not connected to database");
-        }
+//        if (databaseService.isConnected()) {
+//            Optional<Client> result = createGetClientDialog();
+//            if (result.isPresent()) {
+//                if (clientService.getClient(result.get().getEmail(), result.get().getPassword()) != null) {
+//                    System.out.println(clientService.getClient(result.get().getEmail(), result.get().getPassword()));
+//                } else {
+//                    displayInformationDialog("Error", "Wrong credentials", "Wrong credentials");
+//                }
+//            }
+//        } else {
+//            displayInformationDialog("Error", "Not connected to database", "Not connected to database");
+//        }
+       // if (file != null) {
+            TextArea text = new TextArea();
+            Tab tab = new Tab("Normal text", text);
+         //   String textFromFile = FilesUtilities.readFromFile(file);
+            //switch (determineFileType(textFromFile)) {
+             //   case NORMAL:
+                    Gap gapBuffer = new Gap(128);
+                  //  copyTextToGap(textFromFile, gapBuffer);
+                    ServerTextArea serverTextArea = new ServerTextArea("", text, tab, gapBuffer);
+                    //gapTextList.add(gapTextArea);
+                    filesTabPane.getTabs().add(tab);
+              ///      break;
+              //  case RICH:
+                    //HTMLEditor textArea = new HTMLEditor();
+                    //textArea.setHtmlText(textFromFile);
+                    //filesTabPane.getTabs().add(new Tab("Rich text", textArea));
+                //    break;
+  //          }
+       // }
     }
 
     public void handleConnectToDatabase(ActionEvent actionEvent) {
@@ -300,7 +321,7 @@ public class RootController implements Initializable {
 
     private Optional<Client> createInsertClientDialog() {
         Dialog<Client> dialog = new Dialog<>();
-        dialog.setTitle("Insert client");
+        dialog.setTitle("livecoding.Insert client");
         dialog.setHeaderText("Please enter the client's information");
 
         dialog.setResizable(true);
@@ -344,7 +365,7 @@ public class RootController implements Initializable {
 
         dialog.getDialogPane().setContent(grid);
 
-        ButtonType insertClient = new ButtonType("Insert client", ButtonBar.ButtonData.OK_DONE);
+        ButtonType insertClient = new ButtonType("livecoding.Insert client", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(insertClient, ButtonType.CANCEL);
 
         dialog.setResultConverter(dialogButton -> {
@@ -400,7 +421,7 @@ public class RootController implements Initializable {
 
     private Optional<Client> createDeleteClientDialog() {
         Dialog<Client> dialog = new Dialog<>();
-        dialog.setTitle("Delete client");
+        dialog.setTitle("livecoding.Delete client");
         dialog.setHeaderText("Please enter the client's information");
 
         dialog.setResizable(true);
@@ -416,7 +437,7 @@ public class RootController implements Initializable {
 
         dialog.getDialogPane().setContent(grid);
 
-        ButtonType insertClient = new ButtonType("Delete client", ButtonBar.ButtonData.OK_DONE);
+        ButtonType insertClient = new ButtonType("livecoding.Delete client", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(insertClient, ButtonType.CANCEL);
 
         dialog.setResultConverter(dialogButton -> {

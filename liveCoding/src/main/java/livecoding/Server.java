@@ -1,3 +1,5 @@
+package livecoding;
+
 import java.net.*;
 import java.io.*;
 
@@ -5,9 +7,9 @@ import java.io.*;
 this is the main server. here we will make the processing of the messages based on a queue
  */
 
-public class Server
+public class Server implements Runnable
 {
-    public static void main(String args[])
+    public void run()
     {
         ServerSocket serverSocket = null;
         ServiceProcessor sp = new ServiceProcessor();

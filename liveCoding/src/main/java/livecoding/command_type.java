@@ -1,3 +1,5 @@
+package livecoding;
+
 /**
  * Created by Bogdan on 11/01/2016.
  */
